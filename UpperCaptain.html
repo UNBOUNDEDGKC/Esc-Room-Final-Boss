@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>---THE UPPER CAPTAIN---</title>
+    <link href="https://googleapis.com" rel="stylesheet"/>
+    <script>
+        var PlayerTurn = true;
+        var hp1 = 500;
+        let phase2 = false;
+        var plrhp = 200;
+        var targetenemy = 1;
+        let phase2buffs=0
+
+        function checkplayerdead() {
+            if (plrhp <= 0) {
+                document.getElementById('battlelog').innerHTML = "You got ded.";
+                setTimeout(function(){
+                    location.href = "index.html";
+                }, 5000);
+                return true;
+            }
+            return false;
+        }
+
+        function enemyattacks(){
+            const playerhealth = document.getElementById('playerhealth');
+            
+            if(hp1 <= 0) {
+                if (phase2==true){
+
+                document.getElementById('battlelog').innerHTML = "You defeated him. Somehow.";
+                setTimeout(() => {
+                    location.href = "https://docs.google.com/document/d/1Z_t8vipyskVVHhcXinhdY7j6_Wryytsjtk4w5aMmLLU/edit?tab=t.0";
+                }, 5000);
+                return;
+                }else{
+                    hp1=250;
+                    document.getElementById('hpenemy1').innerHTML = hp1 + "HP";
+                    phase2buffs=1
+                    phase2=true;
+                }
+            }
+
+            if (hp1<=300 && hp1 >= 200){
+                PlayerTurn=true
+                plrhp+=5
+                playerhealth.innerHTML=plrhp;
+                document.getElementById('g1name').innerHTML="The Upper Captain";
+            }
+            setTimeout(function(){
+                if (PlayerTurn==false){
+                if(hp1 > 0) {
+                document.getElementById('g1name').innerHTML="Attacking";
+                if ((Math.random() * 10) <= 5+(phase2buffs*2)){
+                    setTimeout(function(){
+                        document.getElementById('g1name').innerHTML="Hit! 10 damage";
+                        plrhp-=10;
+                        setTimeout(function(){
+                            playerhealth.innerHTML=plrhp;
+                            document.getElementById('g1name').innerHTML="The Upper Captain";
+                            if (!checkplayerdead()) {
+                                enemyattacks()
+                            }
+                        }, 500);
+                    }, 500);
+                }else{
+                    setTimeout(function(){
+                        document.getElementById('g1name').innerHTML="Missed!";
+                        setTimeout(function(){
+                            document.getElementById('g1name').innerHTML="The Upper Captain";
+                            PlayerTurn=true;
+                        }, 500);
+                    }, 500);
+                }
+            }
+        }
+    }, 10);
+}
+
+        function Attack(){
+            const atk = document.getElementById('atkselect');
+            if (PlayerTurn == true && atk.value !== "Pick"){
+                PlayerTurn = false;
+
+                if (hp1 <= 0) {
+                    document.getElementById('battlelog').innerHTML = "Target already dead!";
+                    PlayerTurn = true;
+                    return;
+                }
+
+                const stats = atk.value.split('-');
+                const hitChance = Number(stats[1]);
+                const damage = Number(stats[2]);
+
+                if ((Math.random() * 10) <= hitChance) {
+                    document.getElementById('battlelog').innerHTML = "You Hit!";
+                    hp1 = Math.max(0, hp1 - damage);
+                    document.getElementById('hpenemy1').innerHTML = hp1 + "HP";
+                    
+                    if(hp1 <= 0 && phase2==true) {
+                        document.getElementById('Guard1').style.display = "none";
+                        document.getElementById('si1').style.display = "none";
+                    }
+                } else {
+                    document.getElementById('battlelog').innerHTML = "You Missed!";
+                }
+
+                setTimeout(function(){
+                    enemyattacks();
+                }, 1000);
+            }
+        }
+    </script>
+    <style>
+        @import url(https://googleapis.com);
+        h1{
+            font-family: 'Libre Baskerville', serif;
+            font-size: larger;
+            font-weight: bolder;
+        }
+        button{
+            font-family: 'Libre Baskerville', serif;
+            font-weight: bolder;
+            outline: auto;
+            outline-width: 3px;
+            background-color: red;
+            align-items: center;
+            justify-content: center;
+        }
+        select{
+            background-color: rgb(255, 110, 110);
+            outline-style: inset;
+            outline-color: rgb(255, 0, 0);
+            font-weight: bold;
+        }
+        h2{
+            font-size: smaller;
+            font-weight: bold;
+        }
+        .row-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 15px;
+            min-height: 40px;
+            width: 100%;
+        }
+        .indicator {width: 100px; }
+    </style>
+</head>
+<body style="background-color: rgb(255, 81, 81);">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; align-content: center; text-align: center; min-height: 100vh;">
+        <h1>You see him... Upper Captain is here. Fight</h1>
+        <br><br>
+        <div class="row-container">
+            <button class="indicator" id="si1">Selected</button>
+        </div>
+        <br>
+        <div class="row-container">
+            <button id="Guard1" style="align-self: center; width: 100px;">
+                <p id="g1name">The Upper Captain</p>
+                <br> —————— <br>
+                <p id="hpenemy1">500HP</p>
+            </button>
+        </div>
+        <br><br>
+        <select name="Attack" id="atkselect" required>
+            <option value="Pick" disabled selected>Pick an Attack</option>
+            <option value="1-7-10">Stab ( hit=7/10, damage=10 )</option>
+            <option value="2-3-50">ThroatCutter ( hit=3/10, damage=50 )</option>
+            <option value="3-5-25">KnifeThrow ( hit=5/10, damage=25 )</option>
+        </select>
+        <br>
+        <button onclick="Attack()" style="position: relative; bottom: 2px; width: 200px;">Use</button>
+        <br>
+        <button id="playerhealth" style="position: relative; width: 100px; background-color: rgb(255, 0, 90);">200</button>
+        <br>
+        <button style="position: relative; bottom: 20px; width: 40px; height: 20px; z-index: -1; background-color: rgb(255, 0, 90);">HP</button>
+        <br>
+        <button id="battlelog" style="position: relative; width: 200px; background-color: rgb(255, 0, 0); bottom: 10px;">Waiting...</button>
+    </div>
+</body>
+</html>
