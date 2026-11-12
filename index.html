@@ -53,7 +53,7 @@
                 if (PlayerTurn==false){
                 if(hp1 > 0) {
                 document.getElementById('g1name').innerHTML="Attacking";
-                if ((Math.random() * 10) <= 5+(phase2buffs*2)){
+                if ((Math.random() * 10) <= 4+(phase2buffs)){
                     setTimeout(function(){
                         document.getElementById('g1name').innerHTML="Hit! 10 damage";
                         plrhp-=10;
@@ -168,8 +168,8 @@
         <br><br>
         <select name="Attack" id="atkselect" required>
             <option value="Pick" disabled selected>Pick an Attack</option>
-            <option value="1-7-10">Stab ( hit=7/10, damage=10 )</option>
-            <option value="2-3-50">ThroatCutter ( hit=3/10, damage=50 )</option>
+            <option value="1-5-10">Stab ( hit=7/10, damage=10 )</option>
+            <option value="2-4-50">ThroatCutter ( hit=3/10, damage=50 )</option>
             <option value="3-5-25">KnifeThrow ( hit=5/10, damage=25 )</option>
         </select>
         <br>
